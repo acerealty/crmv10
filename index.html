@@ -837,7 +837,48 @@ function adminSetUrl(){ const pwd = prompt('Enter admin password:'); if (pwd !==
 
 function showCloudOptions(){ if (!cloudUrl){ if (!confirm('Cloud URL not set. Do you want to set it now (admin)?')) return adminSetUrl(); return; } const opt = prompt('Type "sync" to send data to Sheet, or "load" to pull data from Sheet (merge/overwrite). Type cancel to exit.', 'sync'); if (!opt) return; if (opt.toLowerCase() === 'sync') doSync(); else if (opt.toLowerCase() === 'load') loadFromCloud(); else alert('Unknown option'); }
 
-function doSync(){ if (!cloudUrl) return alert('Cloud URL not configured. Set in Settings (admin).'); if (!confirm('Send local data (properties, leads, tasks) to cloud now?')) return; const payload = { action: 'sync', props, leads, tasks, timestamp: new Date().toISOString() }; fetch(cloudUrl, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) }).then(r=>{ alert('Sync request sent. Verify your sheet.'); }).catch(e=>{ console.error(e); alert('Sync failed. Check URL and internet. See console for error.'); }); }
+function doSync() {
+  if (!cloudUrl) return alert('Cloud URL not configured. Set in Settings (admin).');
+  if (!confirm('Send local data to cloud now?')) return;
+
+  const payload = {
+    action: 'sync',
+    props,
+    leads,
+    tasks,
+    timestamp: new Date().toISOString()
+  };
+
+  // ---- MAIN JSON POST ----
+  fetch(cloudUrl, {
+    method: 'POST',
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+  .then(r => r.text())
+  .then(txt => {
+    console.log("JSON POST response:", txt);
+    alert('Sync complete.');
+  })
+  .catch(err => {
+    console.warn("JSON failed, trying fallback FORM POST", err);
+
+    // ---- FALLBACK: form POST ----
+    const formData = new FormData();
+    formData.append("payload", JSON.stringify(payload));
+
+    fetch(cloudUrl, { method: "POST", body: formData })
+      .then(r => r.text())
+      .then(txt => {
+        console.log("FORM POST response:", txt);
+        alert("Sync complete (fallback).");
+      })
+      .catch(e2 => {
+        console.error("Both requests failed.", e2);
+        alert("Sync failed. Check URL and internet.");
+      });
+  });
+}
 
 function loadFromCloud(){ if (!cloudUrl) return alert('Cloud URL not configured.'); const pwd = prompt('Admin password required to load from cloud:'); if (pwd !== ADMIN_PASS) return alert('Wrong password.'); if (!confirm('Load data from cloud. You will be asked to Merge or Overwrite local data. Continue?')) return; const loadUrl = cloudUrl + (cloudUrl.indexOf('?') === -1 ? '?' : '&') + 'action=load'; fetch(loadUrl, { method:'GET', headers:{'Accept':'application/json'} }).then(r => r.json()).then(data => { if (!data) return alert('No data returned from cloud.'); const remoteProps = Array.isArray(data.props) ? data.props : []; const remoteLeads = Array.isArray(data.leads) ? data.leads : []; const remoteTasks = Array.isArray(data.tasks) ? data.tasks : []; const choice = prompt(`Cloud has ${remoteProps.length} properties, ${remoteLeads.length} leads, ${remoteTasks.length} tasks. Type "merge" or "overwrite"`); if (!choice) return; if (choice.toLowerCase() === 'overwrite'){ props = remoteProps; leads = remoteLeads; tasks = remoteTasks; saveAll(); refreshUI(); alert('Local data overwritten with cloud data.'); } else if (choice.toLowerCase() === 'merge'){ const mapP = {}; props.forEach(p=> mapP[p.id] = p); remoteProps.forEach(p=> { if (!mapP[p.id]) mapP[p.id] = p; }); props = Object.values(mapP); const mapL = {}; leads.forEach(l=> mapL[l.id] = l); remoteLeads.forEach(l=> { if (!mapL[l.id]) mapL[l.id] = l; }); leads = Object.values(mapL); const mapT = {}; tasks.forEach(t=> mapT[t.id] = t); remoteTasks.forEach(t=> { if (!mapT[t.id]) mapT[t.id] = t; }); tasks = Object.values(mapT); saveAll(); refreshUI(); alert('Merge complete.'); } else { alert('Unknown option; aborted.'); } }).catch(err=>{ console.error(err); alert('Failed to load from cloud. Ensure your Apps Script returns JSON and enables CORS. Check console.'); }); }
 
@@ -942,4 +983,5 @@ function promptInstall() {
 
 </body>
 </html>
+
 
