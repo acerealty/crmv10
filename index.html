@@ -914,5 +914,31 @@ function refreshUIOnce(){ refreshUI(); }
 refreshUIOnce();
 
 </script>
+<script>
+// --- Service Worker Registration (required for installability) ---
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(reg => console.log('Service Worker registered:', reg))
+    .catch(err => console.warn('Service Worker registration failed:', err));
+}
+
+// (Optional) Show install prompt from a custom button
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  console.log('Install prompt available');
+});
+
+// You can call this from a button: promptInstall()
+function promptInstall() {
+  if (!deferredPrompt) {
+    alert("Install option not available yet.");
+    return;
+  }
+  deferredPrompt.prompt();
+}
+</script>
+
 </body>
 </html>
