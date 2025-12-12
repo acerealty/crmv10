@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
 <title>ACE Realty CRM v3 — Professional</title>
-<link rel="manifest" href="manifest.webmanifest" />
+<link rel="manifest" href="./manifest.webmanifest" />
 <meta name="theme-color" content="#0f172a" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-title" content="ACE Realty" />
@@ -917,7 +917,7 @@ refreshUIOnce();
 <script>
 // --- Service Worker Registration (required for installability) ---
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js')
+  navigator.serviceWorker.register('./sw.js')
     .then(reg => console.log('Service Worker registered:', reg))
     .catch(err => console.warn('Service Worker registration failed:', err));
 }
@@ -942,3 +942,4 @@ function promptInstall() {
 
 </body>
 </html>
+
