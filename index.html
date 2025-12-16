@@ -942,7 +942,14 @@ function viewProperty(id){
   if (p.geo) html += `<div style="margin-top:10px"><a class="btn btn-outline" href="${escapeHtml(p.geo)}" target="_blank">📍 Open in Google Maps</a></div>`;
   html += `<div style="margin-top:12px"><strong>Share Text</strong><div style="background:#fff8e6;padding:10px;border-radius:10px;margin-top:6px;white-space:pre-wrap">${escapeHtml(p.desc)}</div></div>`;
   html += `<div style="margin-top:12px"><strong>Owner (private)</strong><div class="small-note">Name: ${escapeHtml(p.oName)} • Phone: ${escapeHtml(p.oPhone)}</div>${p.oNotes?`<div class="small-note" style="margin-top:6px">${escapeHtml(p.oNotes)}</div>`:''}</div>`;
-  html += `<div style="margin-top:12px;display:flex;gap:8px"><button class="btn btn-primary" onclick="shareProp('${p.id}')">📤 Share</button><button class="btn btn-outline" onclick="editProperty('${p.id}')">✏️ Edit</button><button class="btn btn-danger" onclick="deleteProperty('${p.id}')">🗑️ Delete</button></div>`;
+  html += `<div style="margin-top:12px;display:flex;gap:8px"><button
+  type="button"
+  class="btn btn-primary"
+  onclick="event.stopPropagation(); shareProp('${p.id}')"
+>
+  📤 Share
+</button>
+<button class="btn btn-outline" onclick="editProperty('${p.id}')">✏️ Edit</button><button class="btn btn-danger" onclick="deleteProperty('${p.id}')">🗑️ Delete</button></div>`;
   el('viewBody').innerHTML = html; el('viewModal').classList.add('show');
 }
 function closeView(){ el('viewModal').classList.remove('show'); }
@@ -1001,6 +1008,7 @@ location.href =
 
 </body>
 </html>
+
 
 
 
