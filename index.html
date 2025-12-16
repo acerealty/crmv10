@@ -993,16 +993,15 @@ function promptInstall() {
   if (p.geo) text += '\n\n📍 Location:\n' + p.geo;
   text += '\n\n📞 Contact:\n' + p.oName + ' • ' + p.oPhone;
 
-  window.open(
-    'https://wa.me/?text=' + encodeURIComponent(text),
-    '_blank'
-  );
+location.href =
+  'https://wa.me/?text=' + encodeURIComponent(text);
 }
 }
 </script>
 
 </body>
 </html>
+
 
 
 
