@@ -978,10 +978,29 @@ function promptInstall() {
     return;
   }
   deferredPrompt.prompt();
+  function shareProp(id){
+  const p = props.find(x => x.id === id);
+  if (!p) {
+    alert('Property not found');
+    return;
+  }
+
+  let text = '';
+
+  if (p.desc) text += p.desc;
+  if (p.geo) text += '\n\n📍 Location:\n' + p.geo;
+  text += '\n\n📞 Contact:\n' + p.oName + ' • ' + p.oPhone;
+
+  window.open(
+    'https://wa.me/?text=' + encodeURIComponent(text),
+    '_blank'
+  );
+}
 }
 </script>
 
 </body>
 </html>
+
 
 
