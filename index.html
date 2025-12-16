@@ -271,6 +271,7 @@ body{
           <div class="filter" data-type="follow-up">📞 Follow-up</div>
           <div class="filter" data-type="meeting">🤝 Meeting</div>
           <div class="filter" data-type="call">📱 Call</div>
+          <div class="filter" data-type="share">📤 Share Details</div>
         </div>
       </div>
     </div>
@@ -494,7 +495,8 @@ body{
       <input id="taskId" type="hidden" />
       <div class="form-group"><label>Title *</label><input id="taskTitle" /></div>
       <div class="form-row">
-        <div class="form-group"><label>Type *</label><select id="taskType"><option value="">Select</option><option value="site-visit">Site Visit</option><option value="follow-up">Follow-up</option><option value="meeting">Meeting</option><option value="call">Call</option><option value="other">Other</option></select></div>
+        <div class="form-group"><label>Type *</label><select id="taskType"><option value="">Select</option><option value="site-visit">Site Visit</option><option value="follow-up">Follow-up</option><option value="meeting">Meeting</option><option value="share">Share Details</option>
+<option value="call">Call</option><option value="other">Other</option></select></div>
         <div class="form-group"><label>Date *</label><input id="taskDate" type="date" /></div>
       </div>
       <div class="form-row">
@@ -1001,6 +1003,7 @@ function promptInstall() {
 
 </body>
 </html>
+
 
 
 
